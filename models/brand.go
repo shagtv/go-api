@@ -1,13 +1,13 @@
 package models
 
 import (
-	"gopkg.in/mgo.v2/bson"
-	"github.com/shagtv/go-api/library/mongo"
 	"errors"
+	"github.com/shagtv/go-api/library/mongo"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type Brand struct {
-	Id                 bson.ObjectId    `json:"id"        bson:"_id,omitempty"`
+	Id                 bson.ObjectId `json:"id"        bson:"_id,omitempty"`
 	Aliases            []string
 	Info               BrandInfo
 	Is_bad             bool
@@ -41,8 +41,42 @@ func FindBrandByName(name string) (brand Brand, err error) {
 	}
 
 	c := sess.DB("brand_api").C("brand")
-	if (c != nil) {
+	if c != nil {
 		err = c.Find(bson.M{"name": name}).One(&brand)
+		if err != nil {
+			return
+		}
+	} else {
+		err = errors.New("database error")
+		return
+	}
+	return
+}
+
+func BrandsList(skip int, limit int) (brands []Brand, err error) {
+	sess := mongo.Connection()
+	defer sess.Close()
+
+	c := sess.DB("brand_api").C("brand")
+	if c != nil {
+		err = c.Find(bson.M{}).Skip(skip).Limit(limit).All(&brands)
+		if err != nil {
+			return
+		}
+	} else {
+		err = errors.New("database error")
+		return
+	}
+	return
+}
+
+func BrandsCount() (count int, err error) {
+	sess := mongo.Connection()
+	defer sess.Close()
+
+	c := sess.DB("brand_api").C("brand")
+	if c != nil {
+		count, err = c.Count()
 		if err != nil {
 			return
 		}

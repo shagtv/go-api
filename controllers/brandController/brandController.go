@@ -1,15 +1,11 @@
 package brandController
 
 import (
-	"net/http"
-	"encoding/json"
+	"github.com/shagtv/go-api/library/response"
 	"github.com/shagtv/go-api/models"
+	"net/http"
+	"strconv"
 )
-
-type JsonResponse struct {
-	Data interface{}
-	Error string
-}
 
 func Info(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
@@ -17,30 +13,38 @@ func Info(res http.ResponseWriter, req *http.Request) {
 	brand, err := models.FindBrandByName(params.Get("name"))
 
 	if err != nil {
-		ErrorResponse(res, err.Error(), http.StatusNotFound)
+		response.Error(res, err.Error(), http.StatusNotFound)
 	} else {
-		GoodResponse(res, brand)
+		response.Ok(res, brand)
 	}
 }
 
-func SendResponse(res http.ResponseWriter, data interface{}, errorText string, responseStatus int) {
-	data = JsonResponse{Data: data, Error: errorText}
-
-	jsonString, err := json.Marshal(data)
+func List(res http.ResponseWriter, req *http.Request) {
+	skip, err := strconv.Atoi(req.URL.Query().Get("skip"))
 	if err != nil {
-		data = JsonResponse{Error: err.Error()}
-		responseStatus = http.StatusInternalServerError
+		skip = 0
+	}
+	limit, err := strconv.Atoi(req.URL.Query().Get("limit"))
+	if err != nil || limit <= 0 {
+		limit = 10
 	}
 
-	res.Header().Set("Content-Type", "application/json; charset=utf-8")
-	res.WriteHeader(responseStatus)
-	res.Write(jsonString)
+	brands, err := models.BrandsList(skip, limit)
+
+	if err != nil {
+		response.Error(res, err.Error(), http.StatusNotFound)
+	} else {
+		response.Ok(res, brands)
+	}
 }
 
-func GoodResponse(res http.ResponseWriter, data interface{}) {
-	SendResponse(res, data, "", http.StatusOK)
-}
+func Count(res http.ResponseWriter, req *http.Request) {
 
-func ErrorResponse(res http.ResponseWriter, err string, responseStatus int) {
-	SendResponse(res, nil, err, responseStatus)
+	count, err := models.BrandsCount()
+
+	if err != nil {
+		response.Error(res, err.Error(), http.StatusNotFound)
+	} else {
+		response.Ok(res, count)
+	}
 }
