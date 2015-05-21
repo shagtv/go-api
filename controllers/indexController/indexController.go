@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"api/library/db"
-	"api/models"
+	"github.com/shagtv/go-api/library/db"
+	"github.com/shagtv/go-api/models"
 	"math/rand"
 )
 

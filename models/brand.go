@@ -2,7 +2,7 @@ package models
 
 import (
 	"gopkg.in/mgo.v2/bson"
-	"api/library/mongo"
+	"github.com/shagtv/go-api/library/mongo"
 	"errors"
 )
 

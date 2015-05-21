@@ -2,10 +2,10 @@ package main
 
 import (
     "net/http"
-    "api/controllers/indexController"
-    "api/controllers/brandController"
+    "github.com/shagtv/go-api/controllers/indexController"
+    "github.com/shagtv/go-api/controllers/brandController"
     "github.com/gorilla/mux"
-    "api/library/db"
+    "github.com/shagtv/go-api/library/db"
 )
 
 func main() {

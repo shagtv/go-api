@@ -3,7 +3,7 @@ package brandController
 import (
 	"net/http"
 	"encoding/json"
-	"api/models"
+	"github.com/shagtv/go-api/models"
 )
 
 type JsonResponse struct {
