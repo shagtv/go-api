@@ -1,8 +1,6 @@
 package models
 
 import (
-	"errors"
-	"github.com/shagtv/go-api/library/mongo"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -29,60 +27,4 @@ type BrandInfo struct {
 	Annotation string
 	Text       string
 	Logo       string
-}
-
-func FindBrandByName(name string) (brand Brand, err error) {
-	sess := mongo.Connection()
-	defer sess.Close()
-
-	if len(name) == 0 {
-		err = errors.New("empty name")
-		return
-	}
-
-	c := sess.DB("brand_api").C("brand")
-	if c != nil {
-		err = c.Find(bson.M{"name": name}).One(&brand)
-		if err != nil {
-			return
-		}
-	} else {
-		err = errors.New("database error")
-		return
-	}
-	return
-}
-
-func BrandsList(skip int, limit int) (brands []Brand, err error) {
-	sess := mongo.Connection()
-	defer sess.Close()
-
-	c := sess.DB("brand_api").C("brand")
-	if c != nil {
-		err = c.Find(bson.M{}).Skip(skip).Limit(limit).All(&brands)
-		if err != nil {
-			return
-		}
-	} else {
-		err = errors.New("database error")
-		return
-	}
-	return
-}
-
-func BrandsCount() (count int, err error) {
-	sess := mongo.Connection()
-	defer sess.Close()
-
-	c := sess.DB("brand_api").C("brand")
-	if c != nil {
-		count, err = c.Count()
-		if err != nil {
-			return
-		}
-	} else {
-		err = errors.New("database error")
-		return
-	}
-	return
 }
