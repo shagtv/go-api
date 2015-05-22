@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/shagtv/go-api/controllers/brandController"
-	"github.com/shagtv/go-api/controllers/indexController"
+	"github.com/shagtv/go-api/controllers/brand"
+	"github.com/shagtv/go-api/controllers/index"
 	"github.com/shagtv/go-api/library/db"
 	"net/http"
 )
