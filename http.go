@@ -18,7 +18,7 @@ func main() {
 
 func fillRouter(rtr *mux.Router) {
 	rtr.HandleFunc("/", brandController.Count).Methods("GET")
-
+	rtr.HandleFunc("/hello/{name}", indexController.Hello).Methods("GET")
 	rtr.HandleFunc("/install", indexController.Install).Methods("GET")
 
 	rtr.HandleFunc("/user/login", userController.Login)
@@ -29,4 +29,6 @@ func fillRouter(rtr *mux.Router) {
 	rtr.HandleFunc("/brand/info", brandController.Info).Methods("GET")
 	rtr.HandleFunc("/brand/list", brandController.List).Methods("GET")
 	rtr.HandleFunc("/brand/count", brandController.Count).Methods("GET")
+
+	rtr.HandleFunc("/{name}", indexController.Hello).Methods("GET")
 }

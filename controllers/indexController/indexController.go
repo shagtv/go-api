@@ -8,6 +8,7 @@ import (
 	"github.com/shagtv/go-api/storage/userStorage"
 	"math/rand"
 	"net/http"
+	"text/template"
 )
 
 func Index(res http.ResponseWriter, req *http.Request) {
@@ -32,10 +33,12 @@ func Hello(res http.ResponseWriter, req *http.Request) {
 
 	//req.URL.Query()
 
-	dataString := []byte("Hello " + name)
+	//dataString := []byte("Hello " + name)
 
-	res.Header().Set("Content-Type", "text/html")
-	res.Write(dataString)
+	t, _ := template.ParseFiles("templates/edit.html")
+	t.Execute(res, name)
+	//res.Header().Set("Content-Type", "text/html")
+	//res.Write(dataString)
 }
 
 func Install(res http.ResponseWriter, req *http.Request) {
