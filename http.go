@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 	"github.com/shagtv/go-api/controllers/brandController"
 	"github.com/shagtv/go-api/controllers/indexController"
 	"github.com/shagtv/go-api/controllers/userController"
@@ -12,23 +13,27 @@ func main() {
 	rtr := mux.NewRouter()
 	fillRouter(rtr)
 
+	indexController.Connections = make(map[*websocket.Conn]bool)
+
 	http.Handle("/", rtr)
 	http.ListenAndServe(":9000", nil)
 }
 
 func fillRouter(rtr *mux.Router) {
-	rtr.HandleFunc("/", brandController.Count).Methods("GET")
-	rtr.HandleFunc("/hello/{name}", indexController.Hello).Methods("GET")
-	rtr.HandleFunc("/install", indexController.Install).Methods("GET")
+	rtr.HandleFunc("/app/", brandController.Count).Methods("GET")
+	rtr.HandleFunc("/app/hello/{name}", indexController.Hello).Methods("GET")
+	rtr.HandleFunc("/app/install", indexController.Install).Methods("GET")
 
-	rtr.HandleFunc("/user/login", userController.Login)
-	rtr.HandleFunc("/user/logout", userController.Logout)
-	rtr.HandleFunc("/user/register", userController.Register)
-	rtr.HandleFunc("/user/unregister", userController.Unregister)
+	rtr.HandleFunc("/ws", indexController.Ws)
 
-	rtr.HandleFunc("/brand/info", brandController.Info).Methods("GET")
-	rtr.HandleFunc("/brand/list", brandController.List).Methods("GET")
-	rtr.HandleFunc("/brand/count", brandController.Count).Methods("GET")
+	rtr.HandleFunc("/app/user/login", userController.Login)
+	rtr.HandleFunc("/app/user/logout", userController.Logout)
+	rtr.HandleFunc("/app/user/register", userController.Register)
+	rtr.HandleFunc("/app/user/unregister", userController.Unregister)
 
-	rtr.HandleFunc("/{name}", indexController.Hello).Methods("GET")
+	rtr.HandleFunc("/app/brand/info", brandController.Info).Methods("GET")
+	rtr.HandleFunc("/app/brand/list", brandController.List).Methods("GET")
+	rtr.HandleFunc("/app/brand/count", brandController.Count).Methods("GET")
+
+	rtr.HandleFunc("/app/{name}", indexController.Hello).Methods("GET")
 }
